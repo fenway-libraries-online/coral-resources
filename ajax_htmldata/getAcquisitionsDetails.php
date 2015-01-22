@@ -3,9 +3,9 @@
 	$enhancedCostFlag = ((isset($config->settings->enhancedCostHistory)) && (strtoupper($config->settings->enhancedCostHistory) == 'Y')) ? 1 : 0;
 	$enhancedCostFlag = (strtoupper($config->settings->enhancedCostHistory) == 'Y') ? 1 : 0;
 	if ($enhancedCostFlag){
-		$numCols = 10;
+		$numCols = 14;
 		$tableWidth = 760;
-		$formWidth = 784;
+		$formWidth = 1084;
                 ?>
 		<!-- Hide the helpful links, etc. -->
         	<script>
@@ -13,7 +13,7 @@
 		</script>
                 <?php
 	}else{
-		$numCols = 4;
+		$numCols = 8;
 		$tableWidth = 646;
 		$formWidth = 564;
 	}
@@ -179,6 +179,12 @@
 			<th>Sub End</th>
 		<?php } ?>
 			<th>Fund</th>
+		<?php if ($enhancedCostFlag){ ?>
+			<th>Fund Code</th>
+      <th>Tax Excl.</th>
+      <th>Tax Rate</th>
+      <th>Tax Incl.</th>
+		<?php } ?>
 			<th>Payment</th>
 		<?php if ($enhancedCostFlag){ ?>
 			<th style='text-align: right'>%</th>
@@ -200,11 +206,15 @@
 				$subStart = $payment['subscriptionStartDate'] ? normalize_date($payment['subscriptionStartDate']) : "&nbsp;";
 				$subEnd = $payment['subscriptionEndDate'] ? normalize_date($payment['subscriptionEndDate']) : "&nbsp;";
 				$fundName = $payment['fundName'] ? $payment['fundName'] : "&nbsp;";
-				if (integer_to_cost($payment['paymentAmount'])){
-					$cost = $payment['currencyCode'] . " " . integer_to_cost($payment['paymentAmount']);
-				}else{
-					$cost = "&nbsp;";
-				}
+				$fundCode = $payment['fundCode'] ? $payment['fundCode'] : "&nbsp;";
+        $taxRate = $payment['taxRate'] ? $payment['taxRate'] . '&nbsp;%' : "&nbsp;";
+        foreach (Array('priceTaxExcluded', 'priceTaxIncluded', 'paymentAmount') as $amount) { 
+          if (integer_to_cost($payment[$amount])){
+            $cost[$amount] = $payment['currencyCode'] . " " . integer_to_cost($payment[$amount]);
+          }else{
+            $cost[$amount] = "&nbsp;";
+          }
+        }
 				$costDetails = $payment['costDetails'] ? $payment['costDetails'] : "&nbsp;";
 				$costNote = $payment['costNote'] ? $payment['costNote'] : "&nbsp;";
 				$invoiceNum = $payment['invoiceNum'] ? $payment['invoiceNum'] : "&nbsp;";
@@ -217,7 +227,13 @@
 				<td><?php echo $subEnd; ?></td>
 			<?php } ?>
 				<td><?php echo $fundName; ?></td>
-				<td><?php echo $cost; ?></td>
+      <?php if ($enhancedCostFlag){ ?>
+        <td><?php echo $fundCode; ?></td>
+				<td><?php echo $cost['priceTaxExcluded']; ?></td>
+        <td><?php echo $taxRate; ?></td>
+				<td><?php echo $cost['priceTaxIncluded']; ?></td>
+      <?php } ?>
+				<td><?php echo $cost['paymentAmount']; ?></td>
 			<?php if ($enhancedCostFlag){ ?>
 				<td style='text-align: right'><?php echo $payment['amountChange']; ?></td>
 			<?php } ?>
