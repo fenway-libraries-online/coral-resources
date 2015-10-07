@@ -135,7 +135,7 @@ ORDER BY r.titleText, pmt.year, pmt.subscriptionStartDate, pmt.subscriptionEndDa
 <h2 style="text-align: left"><?php echo $title; ?></h2>
 <p style="text-align: left; margin-top: 0.5em; margin-bottom: 0.5em"><?php echo "Generated " . $date; ?></p>
 <h3 style="text-align: left; margin-top: 0.5em; margin-bottom: 0.5em"><?php echo $orgName; ?></h3>
-<p style="text-align: left; margin-bottom: 0.5em"><a href="orgCostReport.php?org=<?php echo $orgid ?>&fmt=csv">Download as CSV</a></p>
+<p style="text-align: left; margin-bottom: 0.5em"><a href="orgCostReport.php?org=<?php echo $orgid ?>&fmt=csv"><img src="images/xls.gif"> Download as CSV</a></p>
 <table class="dataTable">
     <thead>
     <tr>
@@ -159,9 +159,10 @@ ORDER BY r.titleText, pmt.year, pmt.subscriptionStartDate, pmt.subscriptionEndDa
                 $amt = sprintf("\$%.2f", $amt / 100.0);
             }
             $T = "<td>%s</td>\n";
+            $U = "<td><a href='resource.php?resourceID=%d'>%s</a></td>\n";
             $R = "<td style='text-align: right'>%s</td>\n";
             echo "<tr>\n";
-                printf($T, $row['titleText']);
+                printf($U, $row['resourceID'], $row['titleText']);
                 printf($R, $amt);
                 printf($T, $cur);
                 printf($T, $row['year'                  ]);
